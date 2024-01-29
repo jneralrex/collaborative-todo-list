@@ -17,6 +17,8 @@
   });
   //>>><<<
 
+  
+
   //>>>category form and category holder section<<<
   const categoryCreatingForm = $("#categoryCreatingForm");
 
@@ -118,40 +120,64 @@
   $(".add-btn").click(function (event) {
     event.preventDefault();
 
-    const taskBoard = $("#taskBoard");
+    localStorage.getItem("userId");
+    // const taskBoard = $("#taskBoard");
 
-    const titleBox = $("#titleBox").val();
+    const titleBox = $("#title").val();
 
-    const taskDescription = $("#taskDescription").val();
+    const taskDescription = $("#content").val();
 
-    const taskPinner = $(`<div class="task-display-board"></div>`);
+    let userDetails = {
+      title: title,
+      content: content,
+    };
 
-    taskPinner.html(`<div class="task-holder" id="taskHolder">
+    $.ajax({
+      url: "http://todo.reworkstaging.name.ng/v1/tasks",
+      method: "POST",
+      contentType: "application/json",
+      data: JSON.stringify(userDetails),
+      success: function (feedback) {
+       console.log("Task:", feedback);
+       alert("Task uploaded")
+      
+      },
+      error: function (error) {
+        console.log("Login task:", error);
+        alert("Task Upload Error.");
+      },
+    });
 
-     <div class="task-title-and-option-bar">
+    $("form")[0].reset();
 
-      <p class="task-title" id="taskTitle">${titleBox}</p>
+    // const taskPinner = $(`<div class="task-display-board"></div>`);
 
-      <div><button class="edit-btn action-btn" id="editBtn"><img src="./images/icons8-edit-32.png" alt="" class="images"></button><button class="delete-btn action-btn" id="deleteBtn"><img src="./images/icons8-delete-24 (1).png" alt="" class="images"></button></div>
+    // taskPinner.html(`<div class="task-holder" id="taskHolder">
 
-     </div>
+    //  <div class="task-title-and-option-bar">
 
-     <div class="task-details" id="taskDetails">${taskDescription}</div>
+    //   <p class="task-title" id="taskTitle">${titleBox}</p>
 
-      <div class="category-color-and-task-marker">
+    //   <div><button class="edit-btn action-btn" id="editBtn"><img src="./images/icons8-edit-32.png" alt="" class="images"></button><button class="delete-btn action-btn" id="deleteBtn"><img src="./images/icons8-delete-24 (1).png" alt="" class="images"></button></div>
 
-        <div class="task-marker-section">
+    //  </div>
 
-          <label for=""><input type="checkbox" name="done" id="taskMarker" 
-          class="task-marker">Done</label>
+    //  <div class="task-details" id="taskDetails">${taskDescription}</div>
 
-        </div>
+    //   <div class="category-color-and-task-marker">
 
-      </div>
+    //     <div class="task-marker-section">
 
-    </div>`);
+    //       <label for=""><input type="checkbox" name="done" id="taskMarker" 
+    //       class="task-marker">Done</label>
 
-    taskBoard.append(taskPinner);
+    //     </div>
+
+    //   </div>
+
+    // </div>`);
+
+    // taskBoard.append(taskPinner);
 
     $(".modal").hide();
 
@@ -238,7 +264,6 @@
   });
 
   //  task hider section
-
   function hideDoneTask() {
     const taskHider = $("#taskHider");
     const taskMarker = $("#taskMarker");
@@ -253,129 +278,5 @@
 
   $("#taskHider").click(function () {
     hideDoneTask();
-  })
-
-
-   $("#signUpBtn").click(function (event) {
-     event.preventDefault();
-     let name = $("#userName").val();
-     let email = $("#email").val();
-     let password = $("#password").val();
-
-     if (name == "") {
-       let nameError = document.getElementById("nameError");
-       nameError.textContent = "field cannot be empty";
-       nameError.style.color = "red";
-       error = true;
-       return false;
-     } else if (name.length <= 2) {
-       let nameError = document.getElementById("nameError");
-       nameError.textContent = "Length too small";
-       nameError.style.color = "red";
-       error = true;
-       return false;
-     } else {
-       let nameError = document.getElementById("nameError");
-       nameError.textContent = "good";
-       nameError.style.color = "green";
-       error = false;
-     }
-     if (email == "") {
-       let emailError = document.getElementById("emailError");
-       emailError.textContent = "email field cannot be empty";
-       emailError.style.color = "red";
-       error = true;
-       return false;
-     } else if (
-       email.indexOf("@") < 1 ||
-       email.indexOf("@") > email.length - 5
-     ) {
-       let emailError = document.getElementById("emailError");
-       emailError.textContent = "@ is required";
-       emailError.style.color = "red";
-       error = true;
-       return false;
-     } else {
-       let emailError = document.getElementById("emailError");
-       emailError.textContent = "good";
-       emailError.style.color = "green";
-       error = false;
-     }
-
-     let userDetails = {
-       name: name,
-       email: email,
-       password: password,
-     };
-
-     $.ajax({
-       url: "http://todo.reworkstaging.name.ng/v1/users",
-       method: "POST",
-       contentType: "application/json",
-       data: JSON.stringify(userDetails),
-       success: function (response) {
-         console.log("User registration successful:", response);
-         alert("Your registration is successful!");
-       },
-       error: function (error) {
-         console.log("Registration error:", error);
-         alert("Registration Error.");
-       },
-     });
-
-     $("form")[0].reset();
-   });
-
-   $("#loginBtn").click(function (event) {
-     event.preventDefault();
-     let email = $("#email").val();
-     let password = $("#password").val();
-
-     if (email == "") {
-       let emailError = document.getElementById("emailError");
-       emailError.textContent = "email field cannot be empty";
-       emailError.style.color = "red";
-       error = true;
-       return false;
-     } else if (email.indexOf("@") < 1 || email.indexOf("@") > email.length - 5) {
-       let emailError = document.getElementById("emailError");
-       emailError.textContent = "@ is required";
-       emailError.style.color = "red";
-       error = true;
-       return false;
-     } else {
-       let emailError = document.getElementById("emailError");
-       emailError.textContent = "good";
-       emailError.style.color = "green";
-       error = false;
-     }
-
-     let userDetails = {
-       email: email,
-       password: password,
-     };
-
-     $.ajax({
-       url: "http://todo.reworkstaging.name.ng/v1/users/login",
-       method: "POST",
-       contentType: "application/json",
-       data: JSON.stringify(userDetails),
-       success: function (feedback) {
-         console.log("Login response:", feedback);
-
-         if (feedback.code == 404 || feedback.type == 'NOT_EXISTS') {
-           alert("Sorry, your username or password is incorrect.");
-          } else {
-            alert("Login successful");
-              window.location.href = "index.html";
-         }
-       },
-       error: function (error) {
-         console.log("Login error:", error);
-         alert("Login Error.");
-       },
-     });
-
-     $("form")[0].reset();
-   });
+  });  
 });
